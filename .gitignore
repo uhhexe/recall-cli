@@ -1,0 +1,7 @@
+/bin/
+/build/
+/recall
+/recall-cli
+dogfood-results.json
+*.test
+.DS_Store

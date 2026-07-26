@@ -1,0 +1,10 @@
+recall
+Copyright 2026 ühh and contributors
+
+Created by ühh (@uhhexe) as an unofficial outreach demo. Not affiliated with
+or endorsed by Recall.ai.
+
+Scaffolded with CLI Printing Press (https://github.com/mvanhorn/cli-printing-press)
+by Matt Van Horn and Trevin Chow, then hand-trimmed down to a 7-command hero
+flow for this demo. CLI Printing Press is licensed separately under the MIT
+License; this repository's own license is in LICENSE.

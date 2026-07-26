@@ -1,0 +1,153 @@
+name: recall
+description: "Send bots into Zoom, Google Meet, and Microsoft Teams calls to record and transcribe them, from Recall.ai."
+version: "0.1.0"
+base_url: "https://us-east-1.recall.ai"
+health_check_path: "/api/v1/bot/"
+
+auth:
+  type: api_key
+  header: "Authorization"
+  format: "{token}"
+  env_vars:
+    - RECALL_API_KEY
+
+config:
+  format: toml
+  path: "~/.config/recall/config.toml"
+
+resources:
+  bots:
+    description: "Send bots into meetings, check on them, and pull what they captured."
+    endpoints:
+      create:
+        method: POST
+        path: "/api/v1/bot/"
+        description: "Send a bot into a meeting. The bot joins immediately unless --join-at schedules it for later."
+        body:
+          - name: meeting_url
+            flag_name: meeting-url
+            type: string
+            required: true
+            positional: false
+            description: "Meeting URL, for example https://zoom.us/j/123456789 or a Google Meet or Teams link."
+            format: uri
+          - name: bot_name
+            flag_name: name
+            type: string
+            required: false
+            default: "Meeting Notetaker"
+            description: "Display name the bot uses inside the call."
+          - name: join_at
+            flag_name: join-at
+            type: string
+            required: false
+            format: date-time
+            description: "ISO 8601 time to join later instead of immediately, for example 2026-08-01T15:00:00Z. Recall recommends scheduling at least 10 minutes ahead for on-time joins."
+        response:
+          type: object
+          item: Bot
+
+      list:
+        method: GET
+        path: "/api/v1/bot/"
+        description: "List bots, most recent first."
+        params:
+          - name: status
+            type: string
+            required: false
+            description: "Filter by the bot's current status code, for example in_call_recording, done, or fatal."
+          - name: platform
+            type: string
+            required: false
+            description: "Filter by meeting platform, for example zoom, google_meet, or microsoft_teams."
+          - name: meeting_url
+            flag_name: meeting-url
+            type: string
+            required: false
+            description: "Filter by the exact meeting URL the bot was sent to."
+          - name: page
+            type: int
+            required: false
+            description: "Page number for paging past the first page of results."
+        response:
+          type: array
+          item: Bot
+        response_path: results
+
+      get:
+        method: GET
+        path: "/api/v1/bot/{id}/"
+        description: "Get a single bot by ID, including its recordings and status history."
+        params:
+          - name: id
+            type: string
+            required: true
+            positional: true
+            description: "Bot ID, returned by 'recall bots create' or 'recall bots list'."
+        response:
+          type: object
+          item: Bot
+
+      leave:
+        method: POST
+        path: "/api/v1/bot/{id}/leave_call/"
+        description: "Remove a bot from its call without deleting its recording."
+        params:
+          - name: id
+            type: string
+            required: true
+            positional: true
+            description: "Bot ID to remove from its call."
+        response:
+          type: object
+          item: Bot
+
+  recordings:
+    description: "List the recordings your bots have captured."
+    endpoints:
+      list:
+        method: GET
+        path: "/api/v1/recording/"
+        description: "List recordings, most recent first."
+        params:
+          - name: bot_id
+            flag_name: bot-id
+            type: string
+            required: false
+            description: "Only show recordings captured by this bot."
+          - name: status_code
+            flag_name: status
+            type: string
+            required: false
+            description: "Filter by recording status, for example done, processing, or failed."
+        response:
+          type: array
+          item: Recording
+        response_path: results
+
+types:
+  Bot:
+    fields:
+      - name: id
+        type: string
+      - name: bot_name
+        type: string
+      - name: meeting_url
+        type: string
+      - name: join_at
+        type: string
+      - name: status_changes
+        type: string
+
+  Recording:
+    fields:
+      - name: id
+        type: string
+      - name: status
+        type: string
+      - name: created_at
+        type: string
+      - name: started_at
+        type: string
+      - name: completed_at
+        type: string
