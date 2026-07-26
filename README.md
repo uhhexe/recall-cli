@@ -2,6 +2,8 @@ Unofficial demo. Not affiliated with Recall.ai. Built as a proposal.
 
 # recall
 
+![recall demo: sending a notetaker bot into a Zoom call, keyless via dry-run](docs/demo.gif)
+
 A command line interface for the [Recall.ai](https://docs.recall.ai) meeting bot API. Send a bot
 into a Zoom, Google Meet, or Microsoft Teams call, check on it, pull its transcript, and list what
 it recorded, all from the terminal or a script.
