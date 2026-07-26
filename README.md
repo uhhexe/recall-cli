@@ -32,7 +32,7 @@ only the network call turns on.
 
 ## Install
 
-Requires Go 1.23 or newer.
+Requires Go 1.26 or newer (see `go.mod`).
 
 ```bash
 git clone <this-repo>
